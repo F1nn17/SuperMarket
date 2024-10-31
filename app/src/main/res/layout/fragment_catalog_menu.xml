@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:app="http://schemas.android.com/apk/res-auto"
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:id="@+id/frameLayout">
+
+
+	<ScrollView
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:orientation="vertical"
+		app:layout_constraintBottom_toBottomOf="parent"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		android:contentDescription="@string/catalog"
+		app:layout_constraintTop_toTopOf="parent">
+
+		<androidx.constraintlayout.widget.ConstraintLayout
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content">
+
+			<GridLayout
+				android:layout_width="match_parent"
+				android:columnCount="2"
+				android:rowCount="3"
+				android:layout_height="match_parent"
+				app:layout_constraintStart_toStartOf="parent"
+				app:layout_constraintTop_toTopOf="parent"
+				android:orientation="vertical"
+				app:layout_constraintBottom_toBottomOf="parent"
+				app:layout_constraintEnd_toEndOf="parent">
+
+
+				<ImageButton
+					android:layout_marginStart="110dp"
+					android:layout_marginBottom="105px"
+					android:layout_marginEnd="120px"
+					android:layout_row="0"
+					android:layout_column="0"
+					android:id="@+id/milk_product"
+					android:layout_width="64dp"
+					android:layout_height="64dp"
+					android:src="@mipmap/ic_milk_product_foreground"
+					android:clickable="true"
+					android:background="@null"
+					android:contentDescription="@string/milk_product"
+				/>
+
+				<ImageButton
+					android:layout_row="0"
+					android:layout_column="1"
+					android:id="@+id/fruits"
+					android:layout_width="64dp"
+					android:layout_height="64dp"
+					android:src="@mipmap/ic_fruits_foreground"
+					android:clickable="true"
+					android:background="@null"
+					android:contentDescription="@string/fruits"
+				/>
+
+				<ImageButton
+					android:layout_marginStart="110dp"
+					android:layout_marginBottom="105px"
+					android:layout_row="1"
+					android:layout_column="0"
+					android:id="@+id/vegetables"
+					android:layout_width="64dp"
+					android:layout_height="64dp"
+					android:src="@mipmap/ic_vegetables_foreground"
+					android:clickable="true"
+					android:background="@null"
+					android:contentDescription="@string/vegetables"
+				/>
+
+				<ImageButton
+					android:layout_row="1"
+					android:layout_column="1"
+					android:id="@+id/drinks"
+					android:layout_width="64dp"
+					android:layout_height="64dp"
+					android:src="@mipmap/ic_drinks_foreground"
+					android:clickable="true"
+					android:background="@null"
+					android:contentDescription="@string/drinks"
+				/>
+
+				<ImageButton
+					android:layout_marginStart="110dp"
+					android:layout_row="2"
+					android:layout_column="0"
+					android:id="@+id/meat_products"
+					android:layout_width="64dp"
+					android:layout_height="64dp"
+					android:src="@mipmap/ic_meat_product_foreground"
+					android:clickable="true"
+					android:background="@null"
+					android:contentDescription="@string/meat_products"
+				/>
+
+			</GridLayout>
+		</androidx.constraintlayout.widget.ConstraintLayout>
+
+	</ScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

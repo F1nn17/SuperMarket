@@ -13,6 +13,7 @@ public class SQLiteControllerHelper {
 
 	public SQLiteControllerHelper(Context context) {
 		sqliteController = new SqliteController(context);
+		database = sqliteController.getWritableDatabase();
 	}
 
 	public ArrayList<Product> getProductCategories(Product.CATEGORIES categories) {

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class SqliteController extends SQLiteOpenHelper {
 	private static final String NAME_DB = "products.db";
-	private static final int SCHEMA = 0;
+	private static final int SCHEMA = 5;
 
 	private static final String TABLE_NAME = "products";
 	private static final String COLUMN_ID = "_id";
@@ -29,8 +29,14 @@ public class SqliteController extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		System.out.println("Create database table");
 		db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME +
-			"( " + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + COLUMN_CATEGORIES + " TEXT," +
-			COLUMN_NAME + " TEXT," + COLUMN_PRICE + " INTEGER, " + COLUMN_ICON + " TEXT);");
+			" ( "
+			+ COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+			+ COLUMN_CATEGORIES + " TEXT,"
+			+ COLUMN_NAME + " TEXT, "
+			+ COLUMN_PRICE + " INTEGER, "
+			+ COLUMN_ICON + " TEXT "
+			+");"
+		);
 		System.out.println("Create database table success!");
 		fullingTable(db);
 		System.out.println("Database table is filled!");
@@ -42,7 +48,8 @@ public class SqliteController extends SQLiteOpenHelper {
 		onCreate(db);
 	}
 
-	private void fullingTable(SQLiteDatabase db){
+	public void fullingTable(SQLiteDatabase db){
+		System.out.println("Заполнение таблицы!");
 		ArrayList<Product> tables = new ArrayList<>();
 		//milk
 		tables.add(Product.builder().name("Milk").price(119).categories(Product.CATEGORIES.MILK_PRODUCTS).build());
@@ -79,8 +86,10 @@ public class SqliteController extends SQLiteOpenHelper {
 	@SuppressLint({"Recycle", "Range"})
 	public ArrayList<Product> getProductCategories(SQLiteDatabase db, Product.CATEGORIES categories){
 		ArrayList<Product> tables = new ArrayList<>();
+		System.out.println("Вызов метода!");
+		System.out.println("Получаем продукты из нужной категории: " + categories.getCATEGORIES());
 		Cursor cursor = db.rawQuery(
-			"SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_CATEGORIES + " = " + categories.getCATEGORIES(),
+			"SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_CATEGORIES + " = '" + categories.getCATEGORIES() + "'",
 			null);
 		cursor.moveToFirst();
 		while (!cursor.isAfterLast()) {
@@ -99,6 +108,7 @@ public class SqliteController extends SQLiteOpenHelper {
 				cursor.getString(cursor.getColumnIndex(COLUMN_ICON))));
 			cursor.moveToNext();
 		}
+		System.out.println("Продукты получены!");
 		db.close();
 		return tables;
 	}

@@ -43,6 +43,7 @@
 		app:layout_constraintEnd_toEndOf="parent"
 		android:layout_marginBottom="3dp"
 		app:layout_constraintBottom_toTopOf="@+id/child_fragment_catalogs"/>
+
 	<FrameLayout
 		android:id="@+id/child_fragment_catalogs"
 		android:layout_width="match_parent"

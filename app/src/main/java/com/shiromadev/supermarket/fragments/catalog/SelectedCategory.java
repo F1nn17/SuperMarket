@@ -16,11 +16,9 @@ import com.shiromadev.supermarket.item.Product;
 import java.util.ArrayList;
 
 public class SelectedCategory extends Fragment {
-
-
 	private ArrayList<Product> products;
 	private GridLayout gridProduct;
-	private View root;
+
 	public SelectedCategory(String flag){
 		products = new ArrayList<>();
 		switch (flag){
@@ -44,7 +42,6 @@ public class SelectedCategory extends Fragment {
 
 	@SuppressLint("SetTextI18n")
 	private void loadViewProducts(){
-		int c = 0, r = 0, id = 0;
 		for (Product item: products) {
 			gridProduct.addView(new ProductView(getContext(), item).getLayout());
 		}
@@ -59,8 +56,8 @@ public class SelectedCategory extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 							 Bundle savedInstanceState) {
-		root = inflater.inflate(R.layout.fragment_selected_category, container, false);
-		gridProduct =root.findViewById(R.id.grid_product);
+		View root = inflater.inflate(R.layout.fragment_selected_category, container, false);
+		gridProduct = root.findViewById(R.id.grid_product);
 		loadViewProducts();
 		return root;
 	}

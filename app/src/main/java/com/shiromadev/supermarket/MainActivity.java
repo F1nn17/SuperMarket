@@ -1,5 +1,6 @@
 package com.shiromadev.supermarket;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import android.view.View;
@@ -12,14 +13,22 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import com.shiromadev.supermarket.fragments.catalog.Catalog;
+import com.shiromadev.supermarket.fragments.shoppingcart.ShoppingCart;
+import com.shiromadev.supermarket.item.shoppingcart.ProductCartList;
 import com.shiromadev.supermarket.sqlite.helper.SQLiteControllerHelper;
 import lombok.Getter;
 
 import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
-	FrameLayout container;
+	@SuppressLint("StaticFieldLeak")
+	@Getter
+	private static FrameLayout container;
 	FragmentManager fragmentManager;
+
+	@Getter
+	private static final ProductCartList shoppingCart = new ProductCartList();
+
 	@Getter
 	private static SQLiteControllerHelper sqlHelper;
 
@@ -50,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
 		}
 	}
 
-	private void switchFragment(Fragment fragment){
+	private void switchFragment(Fragment fragment) {
 		getSupportFragmentManager().beginTransaction().replace(container.getId(), fragment).commit();
 	}
 
@@ -60,13 +69,13 @@ public class MainActivity extends AppCompatActivity {
 			switchFragment(new Catalog());
 		}
 		if (checkId == R.id.barcode) {
-			//switchFragment(new Catalog());
+			//switchFragment(new Barcode());
 		}
 		if (checkId == R.id.stock_roulette) {
-			//switchFragment(new Catalog());
+			//switchFragment(new StockRoulette());
 		}
 		if (checkId == R.id.shopping_cart) {
-			//switchFragment(new Catalog());
+			switchFragment(new ShoppingCart(getSupportFragmentManager()));
 		}
 	}
 }

@@ -15,4 +15,6 @@
 	<string name="quantity">Quantity</string>
 	<string name="total">Total</string>
 	<string name="get_qr_code">Get QR-code</string>
+	<string name="qr_code">QR-code</string>
+	<string name="generate_barcode">Generate</string>
 </resources>

@@ -12,13 +12,15 @@ import androidx.fragment.app.FragmentManager;
 import com.shiromadev.supermarket.MainActivity;
 import com.shiromadev.supermarket.R;
 import com.shiromadev.supermarket.api.custom.view.shoppingcart.RemoveProduct;
+import com.shiromadev.supermarket.fragments.barcode.Barcode;
 import com.shiromadev.supermarket.item.Product;
 import com.shiromadev.supermarket.item.shoppingcart.ProductCart;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-public class ShoppingCart extends Fragment {
+public class ShoppingCart extends Fragment implements View.OnClickListener {
 	private static final ArrayList<TableRow> tableRows = new ArrayList<>();
 	private static final ArrayList<TextView> columnsTextTitle = new ArrayList<>();
 	private static final ArrayList<TextView> columnsTextPrice = new ArrayList<>();
@@ -27,6 +29,9 @@ public class ShoppingCart extends Fragment {
 	private static final ArrayList<RemoveProduct> columnsItemRemove = new ArrayList<>();
 	private TableLayout shoppingCartTable;
 	TextView totalSum;
+	@SuppressLint("StaticFieldLeak")
+	@Getter
+	static View root;
 
 	private static FragmentManager fragmentManager;
 
@@ -43,9 +48,11 @@ public class ShoppingCart extends Fragment {
 	@Override
 	public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
 							 Bundle savedInstanceState) {
-		View root = inflater.inflate(R.layout.fragment_shopping_cart, container, false);
+		root = inflater.inflate(R.layout.fragment_shopping_cart, container, false);
 		shoppingCartTable = root.findViewById(R.id.shopping_cart_table);
 		totalSum = root.findViewById(R.id.total_sum);
+		Button getBarcode = root.findViewById(R.id.getBarcode);
+		getBarcode.setOnClickListener(this);
 		System.out.println("Продукты в корзине:");
 		for (ProductCart item : MainActivity.getShoppingCart()) {
 			System.out.println(item.getProduct().getName());
@@ -127,6 +134,14 @@ public class ShoppingCart extends Fragment {
 	public static void update() {
 		fragmentManager.beginTransaction()
 			.replace(MainActivity.getContainer().getId(), new ShoppingCart(fragmentManager))
+			.commit();
+	}
+
+
+	@Override
+	public void onClick(View v) {
+		fragmentManager.beginTransaction()
+			.replace(MainActivity.getContainer().getId(), new Barcode())
 			.commit();
 	}
 }

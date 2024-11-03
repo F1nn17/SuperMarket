@@ -41,5 +41,5 @@ dependencies {
 	androidTestImplementation(libs.espresso.core)
 	implementation("org.projectlombok:lombok:1.18.34")
 	annotationProcessor("org.projectlombok:lombok:1.18.34")
-
+	implementation(libs.zxing.android.embedded)
 }

@@ -12,6 +12,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import com.shiromadev.supermarket.fragments.barcode.Barcode;
 import com.shiromadev.supermarket.fragments.catalog.Catalog;
 import com.shiromadev.supermarket.fragments.shoppingcart.ShoppingCart;
 import com.shiromadev.supermarket.item.shoppingcart.ProductCartList;
@@ -69,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
 			switchFragment(new Catalog());
 		}
 		if (checkId == R.id.barcode) {
-			//switchFragment(new Barcode());
+			switchFragment(new Barcode());
 		}
 		if (checkId == R.id.stock_roulette) {
 			//switchFragment(new StockRoulette());

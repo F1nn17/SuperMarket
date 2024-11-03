@@ -16,4 +16,6 @@
 	<string name="quantity">Кол-во</string>
 	<string name="total">Всего</string>
 	<string name="get_qr_code">Получить QR-код</string>
+	<string name="qr_code">QR-code</string>
+	<string name="generate_barcode">Сгенерировать</string>
 </resources>

@@ -1,22 +1,21 @@
 package com.shiromadev.supermarket.item.shoppingcart;
 
 import com.shiromadev.supermarket.item.Product;
-import lombok.Builder;
 import lombok.Data;
+import lombok.experimental.SuperBuilder;
 
 @Data
-@Builder
-public class ProductCart {
-	private Product product;
+@SuperBuilder
+public class ProductCart extends Product {
 	private int countProduct;
 
 	@Override
 	public boolean equals(Object obj) {
 		if (!(obj instanceof ProductCart item)) return false;
-		return this.product.equals(item.product);
+		return this.getName().equals(item.getName());
 	}
 
 	public int totalSumProduct(){
-		return product.getPrice() * countProduct;
+		return getPrice() * countProduct;
 	}
 }

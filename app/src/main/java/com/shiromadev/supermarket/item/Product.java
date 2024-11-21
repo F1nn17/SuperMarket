@@ -1,12 +1,13 @@
 package com.shiromadev.supermarket.item;
 
-import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
+import lombok.experimental.SuperBuilder;
 
 @Data
-@Builder
+@SuperBuilder
 public class Product {
+	private int id;
 	private String name;
 	private int price;
 	private CATEGORIES categories;

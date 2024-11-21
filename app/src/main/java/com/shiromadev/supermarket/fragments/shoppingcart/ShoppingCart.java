@@ -55,7 +55,7 @@ public class ShoppingCart extends Fragment implements View.OnClickListener {
 		getBarcode.setOnClickListener(this);
 		System.out.println("Продукты в корзине:");
 		for (ProductCart item : MainActivity.getShoppingCart()) {
-			System.out.println(item.getProduct().getName());
+			System.out.println(item.getName());
 		}
 		loadShoppingCartProducts();
 		total();
@@ -75,7 +75,7 @@ public class ShoppingCart extends Fragment implements View.OnClickListener {
 		);
 
 		for (int i = 0; i < MainActivity.getShoppingCart().size(); i++) {
-			Product product = MainActivity.getShoppingCart().get(i).getProduct();
+			ProductCart product = MainActivity.getShoppingCart().get(i);
 			int k = 0;
 			tableRows.add(k, new TableRow(getContext()));
 			//наименование товара

@@ -18,4 +18,5 @@
 	<string name="get_qr_code">Получить QR-код</string>
 	<string name="qr_code">QR-code</string>
 	<string name="generate_barcode">Сгенерировать</string>
+	<string name="start">Старт</string>
 </resources>

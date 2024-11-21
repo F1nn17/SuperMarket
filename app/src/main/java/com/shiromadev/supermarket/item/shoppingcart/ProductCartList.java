@@ -1,88 +1,90 @@
 package com.shiromadev.supermarket.item.shoppingcart;
 
-import androidx.annotation.NonNull;
-import org.jetbrains.annotations.NotNull;
+import com.shiromadev.supermarket.item.Product;
+
 import java.util.*;
 
-public class ProductCartList implements RandomAccess, Cloneable, java.io.Serializable, Iterable<ProductCart> {
+public class ProductCartList<T extends Product>extends AbstractList<T>
+	implements List<T>, RandomAccess, java.io.Serializable {
 
-	ProductCart[] products;
+	private Object[] products;
 	private int size;
-	private static final int DEFAULT_CAPACITY = 1;
-	private static final ProductCart[] DEFAULT_CAPACITY_EMPTY_ELEMENT_DATA = {};
 
 	public ProductCartList() {
-		products = DEFAULT_CAPACITY_EMPTY_ELEMENT_DATA;
+		products = new Object[1];
+		size = 0;
 	}
 
 	public ProductCartList(int initialCapacity){
 		if (initialCapacity > 0) {
 			products = new ProductCart[initialCapacity];
 		} else if (initialCapacity == 0) {
-			products = new ProductCart[DEFAULT_CAPACITY];
+			products = new ProductCart[1];
 		} else {
 			throw new IllegalArgumentException("Illegal Capacity: "+
 				initialCapacity);
 		}
 	}
 
-	private ProductCart[] grow(int minCapacity) {
-		int oldCapacity = products.length;
-		if (oldCapacity > 0 || products != DEFAULT_CAPACITY_EMPTY_ELEMENT_DATA) {
-			int newCapacity = ++oldCapacity;
-			return products = Arrays.copyOf(products, newCapacity);
-		} else {
-			return products = new ProductCart[Math.max(DEFAULT_CAPACITY, minCapacity)];
-		}
-	}
-
-	private ProductCart[] grow() {
-		return grow(size + 1);
-	}
-
-	private void add(ProductCart e, ProductCart[] elementData, int s) {
-		if (s == elementData.length)
-			elementData = grow();
-		elementData[s] = e;
-		size = s + 1;
-	}
-
-	public void add(ProductCart product){
+	// Добавление элемента в список
+	public boolean add(T product) {
 		boolean search = false;
 		if(!isEmpty()){
-			for(ProductCart item : products){
+			for (Object o : products) {
+				ProductCart item = (ProductCart) o;
 				System.out.println(products.length);
 				System.out.println(item);
-				System.out.println("item: " + item.getProduct().getName());
-				if(Objects.equals(item.getProduct().getName(), product.getProduct().getName())){
-					item.setCountProduct(item.getCountProduct() + product.getCountProduct());
+				System.out.println("item: " + item.getName());
+				if (Objects.equals(item.getName(), product.getName())) {
+					item.setCountProduct(item.getCountProduct() + 1);
 					search = true;
 					break;
 				}
 			}
 		}
 		if(!search) {
-			add(product, products, size);
+			if (size == products.length) {
+				resize();
+			}
+			products[size++] = product;
 		}
+
+		return false;
 	}
 
+	// Увеличение размера массива
+	private void resize() {
+		Object[] newArray = new Object[products.length+1];
+		System.arraycopy(products, 0, newArray, 0, products.length);
+		products = newArray;
+	}
+
+
 	public boolean isEmpty(){
-		if(products == DEFAULT_CAPACITY_EMPTY_ELEMENT_DATA) return true;
+		if(size == 0) return true;
 		return products[0] == null;
 	}
 
-	public ProductCart get(int index) {
-		return products[index];
+	// Получение элемента по индексу
+	public T get(int index) {
+		Objects.checkIndex(index, size);
+		return elementData(index);
 	}
 
-	public void remove(int index) {
+	@SuppressWarnings("unchecked")
+	T elementData(int index) {
+		return (T) products[index];
+	}
+
+	public T remove(int index) {
 		Objects.checkIndex(index, size);
 		fastRemove(index);
+		return null;
 	}
 
-	public void remove(ProductCart o) {
+	public void remove(T o) {
 		System.out.println("До удаления: "+products.length);
-		final ProductCart[] es = products;
+		final Object[] es = products;
 		final int size = this.size;
 		int i = 0;
 		found: {
@@ -103,9 +105,9 @@ public class ProductCartList implements RandomAccess, Cloneable, java.io.Seriali
 
 
 	private void fastRemove(int i) {
-		ProductCart[] productOld = products;
+		Object[] productOld = products;
 		--size;
-		if(size == 0) products = DEFAULT_CAPACITY_EMPTY_ELEMENT_DATA;
+		if(size == 0) products = new Object[1];
 		else products = new ProductCart[size];
 		int skip = 0;
 		for(int k = 0; k < productOld.length; k++){
@@ -123,38 +125,5 @@ public class ProductCartList implements RandomAccess, Cloneable, java.io.Seriali
 
 	public int size() {
 		return size;
-	}
-
-	@NotNull
-	@Override
-	public ProductCartList clone() {
-		try {
-			return (ProductCartList) super.clone();
-		} catch (CloneNotSupportedException e) {
-			throw new AssertionError();
-		}
-	}
-
-	@NonNull
-	@NotNull
-	@Override
-	public Iterator<ProductCart> iterator() {
-		return new Iterator<>() {
-			private final ProductCart[] currentData = products;
-			private int pos = 0;
-			@Override
-			public boolean hasNext() {
-				return pos < currentData.length;
-			}
-
-			@Override
-			public ProductCart next() {
-				return currentData[pos++];
-			}
-			@Override
-			public void remove() {
-				ProductCartList.this.remove(pos++);
-			}
-		};
 	}
 }

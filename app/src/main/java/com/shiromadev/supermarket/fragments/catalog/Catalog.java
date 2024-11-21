@@ -1,5 +1,6 @@
 package com.shiromadev.supermarket.fragments.catalog;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.widget.TextView;
 import androidx.fragment.app.Fragment;
@@ -15,7 +16,9 @@ public class Catalog extends Fragment {
 
 	private static String flagCategory;
 	private static FragmentManager manager;
+	@SuppressLint("StaticFieldLeak")
 	private static TextView headerTitle;
+	@SuppressLint("StaticFieldLeak")
 	private static View root;
 
 	public static void setFlagCategory(String flagCategory) {

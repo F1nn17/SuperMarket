@@ -1,11 +1,15 @@
 package com.shiromadev.supermarket;
 
 import android.annotation.SuppressLint;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
 
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -15,6 +19,8 @@ import androidx.fragment.app.FragmentTransaction;
 import com.shiromadev.supermarket.fragments.barcode.Barcode;
 import com.shiromadev.supermarket.fragments.catalog.Catalog;
 import com.shiromadev.supermarket.fragments.shoppingcart.ShoppingCart;
+import com.shiromadev.supermarket.fragments.stockroulette.StockRoulette;
+import com.shiromadev.supermarket.item.shoppingcart.ProductCart;
 import com.shiromadev.supermarket.item.shoppingcart.ProductCartList;
 import com.shiromadev.supermarket.sqlite.helper.SQLiteControllerHelper;
 import lombok.Getter;
@@ -28,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
 	FragmentManager fragmentManager;
 
 	@Getter
-	private static final ProductCartList shoppingCart = new ProductCartList();
+	private static ProductCartList<ProductCart> shoppingCart = new ProductCartList<>();
 
 	@Getter
 	private static SQLiteControllerHelper sqlHelper;
@@ -64,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
 		getSupportFragmentManager().beginTransaction().replace(container.getId(), fragment).commit();
 	}
 
+
 	public void onClick(View view) {
 		int checkId = view.getId();
 		if (checkId == R.id.catalog_button) {
@@ -73,10 +80,31 @@ public class MainActivity extends AppCompatActivity {
 			switchFragment(new Barcode());
 		}
 		if (checkId == R.id.stock_roulette) {
-			//switchFragment(new StockRoulette());
+			switchFragment(new StockRoulette());
 		}
 		if (checkId == R.id.shopping_cart) {
 			switchFragment(new ShoppingCart(getSupportFragmentManager()));
 		}
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		System.out.println("Load carts");
+		//shoppingCart = sqlHelper.loadShoppingCart();
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		System.out.println("Save carts");
+		sqlHelper.saveShoppingCart(shoppingCart);
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+		System.out.println("Save carts");
+		sqlHelper.saveShoppingCart(shoppingCart);
 	}
 }

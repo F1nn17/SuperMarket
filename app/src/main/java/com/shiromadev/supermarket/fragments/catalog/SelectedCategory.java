@@ -2,6 +2,7 @@ package com.shiromadev.supermarket.fragments.catalog;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.widget.GridLayout;
 import android.widget.GridView;
 import androidx.fragment.app.Fragment;
@@ -14,6 +15,8 @@ import com.shiromadev.supermarket.api.custom.view.ProductView;
 import com.shiromadev.supermarket.item.Product;
 
 import java.util.ArrayList;
+
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 public class SelectedCategory extends Fragment {
 	private ArrayList<Product> products;
@@ -42,8 +45,21 @@ public class SelectedCategory extends Fragment {
 
 	@SuppressLint("SetTextI18n")
 	private void loadViewProducts(){
+		gridProduct.setRowCount(products.size()/2+2);
+		int i = 0, k = 0;
+		GridLayout.LayoutParams params;
 		for (Product item: products) {
-			gridProduct.addView(new ProductView(getContext(), item).getLayout());
+			params = new GridLayout.LayoutParams();
+			params.rowSpec = GridLayout.spec(i);
+			params.columnSpec = GridLayout.spec(k);
+			params.setGravity(Gravity.CENTER);
+			params.setMarginStart(125);
+			gridProduct.addView(new ProductView(getContext(), item).getLayout(), params);
+			k++;
+			if (k > 1){
+				i++;
+				k = 0;
+			}
 		}
 	}
 

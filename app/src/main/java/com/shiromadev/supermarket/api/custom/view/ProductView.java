@@ -4,9 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.*;
 import com.shiromadev.supermarket.MainActivity;
 import com.shiromadev.supermarket.R;
 import com.shiromadev.supermarket.item.Product;
@@ -14,6 +12,8 @@ import com.shiromadev.supermarket.item.shoppingcart.ProductCart;
 import lombok.Getter;
 
 import static android.view.View.TEXT_ALIGNMENT_CENTER;
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 @Getter
 public class ProductView implements View.OnClickListener {
@@ -27,6 +27,9 @@ public class ProductView implements View.OnClickListener {
 		this.product = product;
 		layout = new LinearLayout(context);
 		layout.setOrientation(LinearLayout.VERTICAL);
+		LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(0, WRAP_CONTENT, 1f);
+		params1.gravity = Gravity.FILL;
+		layout.setLayoutParams(params1);
 		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(250, 250);
 		params.gravity = gravity;
 		ImageButton bt = new ImageButton(context);
@@ -45,7 +48,10 @@ public class ProductView implements View.OnClickListener {
 	public void onClick(View v) {
 		System.out.println("Товар добавлен в корзину");
 		ProductCart productCart = ProductCart.builder()
-			.product(product)
+			.name(product.getName())
+			.price(product.getPrice())
+			.categories(product.getCategories())
+			.icon(product.getIcon())
 			.countProduct(1)
 			.build();
 		MainActivity.getShoppingCart().add(productCart);

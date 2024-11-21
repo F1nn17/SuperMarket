@@ -34,7 +34,7 @@ public class Barcode extends Fragment implements View.OnClickListener{
 		generateQRBtn.setOnClickListener(this);
 		StringBuilder textBarcode = new StringBuilder();
 		for(ProductCart product: MainActivity.getShoppingCart()){
-			textBarcode.append(product.getProduct()).append(":").append(product.getCountProduct()).append("\n");
+			textBarcode.append(product.getName()).append(":").append(product.getCountProduct()).append("\n");
 		}
 		generateQRCode(String.valueOf(textBarcode));
 		return root;

@@ -19,6 +19,7 @@ import com.shiromadev.supermarket.MainActivity;
 import com.shiromadev.supermarket.R;
 import com.shiromadev.supermarket.api.adapter.SliderAdapter;
 import com.shiromadev.supermarket.item.Product;
+import com.shiromadev.supermarket.item.ProductAction;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -43,6 +44,7 @@ public class StockRoulette extends Fragment {
 	private Button startButton;
 	private TextView timerText;
 	private long timeLeftInMillis;
+	private long hours = 24;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -68,7 +70,7 @@ public class StockRoulette extends Fragment {
 		for (Product item : products) {
 			int randInt = random.nextInt(75 - 5) + 5;
 			@SuppressLint("DefaultLocale") String text = String.format("Скидка %d%%\n%s", randInt, item.getName());
-			slideItems.add(new SliderAdapter.SlideItem(text));
+			slideItems.add(new SliderAdapter.SlideItem(text, item, randInt));
 		}
 		// Установите адаптер
 		sliderAdapter = new SliderAdapter(slideItems);
@@ -100,14 +102,14 @@ public class StockRoulette extends Fragment {
 	@SuppressLint("SetTextI18n")
 	private void startAutoScroll() {
 		timerText.setVisibility(View.VISIBLE);
+		MainActivity.setAction(true);
 		// Обновляем текст на таймере
-		timerText.setText("Время зафиксировано. Подождите 24 часа.");
 		// Зафиксировать текущее время в миллисекундах
 		long currentTimeMillis = System.currentTimeMillis();
 		// Сохраняем время нажатия кнопки в SharedPreferences
 		saveButtonTimestamp(currentTimeMillis);
+		checkButtonTimestamp();
 		// Показать сообщение о том, что время зафиксировано
-		System.out.println("Время зафиксировано. Подождите 24 часа.");
 		// Скрываем кнопку после нажатия
 		startButton.setVisibility(View.INVISIBLE);
 		// Начальная позиция слайда
@@ -120,7 +122,15 @@ public class StockRoulette extends Fragment {
 			handler.removeCallbacksAndMessages(null);
 			System.out.println("Прокрутка завершена");
 			System.out.println("акция применена след: " + slideItems.get(currentPosition).getText());
+			applyAction(slideItems.get(currentPosition).getProduct(), slideItems.get(currentPosition).getNewPrice());
 		}, scrollDuration);
+	}
+
+	private void applyAction(Product product, int newPrice) {
+		MainActivity.setProductAction(ProductAction.builder()
+				.product(product)
+				.newPrice(newPrice)
+			.build());
 	}
 
 	private void startSliding() {
@@ -130,7 +140,7 @@ public class StockRoulette extends Fragment {
 			public void run() {
 				// Вычисляем следующую позицию слайда
 				currentPosition = (currentPosition + 1) % sliderAdapter.getItemCount();
-				viewPager.setCurrentItem(currentPosition, true);
+				viewPager.setCurrentItem(currentPosition, false);
 				viewPagerLeft.setCurrentItem(currentPosition-1, false);
 				viewPagerRight.setCurrentItem(currentPosition+1, false);
 				// Повторяем прокрутку через интервал (1 секунда)
@@ -147,47 +157,28 @@ public class StockRoulette extends Fragment {
 		editor.apply();
 	}
 
-	private void applyAction(int position) {
-		// Применяем акцию в зависимости от текущего слайда
-		String actionMessage = "Акция на слайде: ";
-		switch (position) {
-			case 0:
-				actionMessage += "Скидка 20% на молоко";
-				break;
-			case 1:
-				actionMessage += "Скидка 15% на сыр";
-				break;
-			case 2:
-				actionMessage += "Скидка 10% на хлеб";
-				break;
-		}
-
-		// Выводим сообщение или применяем логику акции
-		System.out.println(actionMessage);
-	}
-
-	// Метод для проверки, прошло ли 24 часа с момента нажатия
+	// Метод для проверки, прошло ли 12 часа с момента нажатия
 	@SuppressLint("DefaultLocale")
 	private void checkButtonTimestamp() {
 		// Получаем сохранённую метку времени
 		SharedPreferences preferences = requireContext().getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
 		long buttonTimestamp = preferences.getLong(KEY_BUTTON_TIMESTAMP, 0);
 
-		// Проверяем, прошло ли 24 часа
+		// Проверяем, прошло ли 12 часа
 		if (buttonTimestamp != 0) {
 			long currentTimeMillis = System.currentTimeMillis();
 			long timeDifference = currentTimeMillis - buttonTimestamp;
 
-			// Если прошло больше 24 часов, показываем кнопку
-			if (timeDifference >= 24 * 60 * 60 * 1000) {
+			// Если прошло больше 12 часов, показываем кнопку
+			if (timeDifference >= hours * 60 * 60 * 1000) {
 				// Показываем кнопку снова
 				startButton.setVisibility(View.VISIBLE);
 				timerText.setVisibility(View.INVISIBLE);
 				timerText.setText(""); // Очищаем текст
-				System.out.println("24 часа прошли. Кнопка снова доступна.");
+				System.out.println("12 часа прошли. Кнопка снова доступна.");
 			} else {
-				// Если не прошло 24 часа, показываем оставшееся время
-				long remainingTimeMillis = (24 * 60 * 60 * 1000) - timeDifference;
+				// Если не прошло 12 часа, показываем оставшееся время
+				long remainingTimeMillis = (hours * 60 * 60 * 1000) - timeDifference;
 				timeLeftInMillis = remainingTimeMillis;
 				updateTimerDisplay(remainingTimeMillis);
 

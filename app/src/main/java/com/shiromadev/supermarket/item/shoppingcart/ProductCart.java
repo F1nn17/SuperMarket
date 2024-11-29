@@ -11,8 +11,12 @@ public class ProductCart extends Product {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (!(obj instanceof ProductCart item)) return false;
-		return this.getName().equals(item.getName());
+		if ((obj instanceof ProductCart item)){
+			return this.getName().equals(item.getName());
+		} else if ((obj instanceof Product item)) {
+			return this.getName().equals(item.getName());
+		}
+		return false;
 	}
 
 	public int totalSumProduct(){

@@ -55,5 +55,6 @@ public class ProductView implements View.OnClickListener {
 			.countProduct(1)
 			.build();
 		MainActivity.getShoppingCart().add(productCart);
+		MainActivity.updateCount();
 	}
 }

@@ -122,6 +122,7 @@ public class ShoppingCart extends Fragment implements View.OnClickListener {
 		}
 	}
 
+
 	@SuppressLint("SetTextI18n")
 	private void total(){
 		int total = 0;
@@ -143,5 +144,11 @@ public class ShoppingCart extends Fragment implements View.OnClickListener {
 		fragmentManager.beginTransaction()
 			.replace(MainActivity.getContainer().getId(), new Barcode())
 			.commit();
+	}
+
+	@Override
+	public void onStart() {
+		super.onStart();
+		total();
 	}
 }

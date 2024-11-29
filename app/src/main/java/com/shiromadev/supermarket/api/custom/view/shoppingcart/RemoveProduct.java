@@ -31,5 +31,6 @@ public class RemoveProduct implements View.OnClickListener {
 	public void onClick(View v) {
 		MainActivity.getShoppingCart().remove(product);
 		ShoppingCart.update();
+		MainActivity.updateCount();
 	}
 }

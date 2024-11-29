@@ -80,5 +80,21 @@
 			/>
 		</LinearLayout>
 	</androidx.appcompat.widget.Toolbar>
-
+	<TextView
+		android:id="@+id/countProducts"
+		android:layout_height="24dp"
+		android:layout_width="24dp"
+		app:layout_constraintTop_toBottomOf="@+id/child_fragment"
+		app:layout_constraintBottom_toTopOf="@+id/toolbar"
+		app:layout_editor_absoluteY="650dp"
+		android:textSize="24sp"
+		android:autoSizeTextType="uniform"
+		android:autoSizeMinTextSize="8sp"
+		android:autoSizeMaxTextSize="40sp"
+		android:autoSizeStepGranularity="2sp"
+		android:textColor="@color/black"
+		app:layout_constraintEnd_toEndOf="parent"
+		app:layout_constraintStart_toStartOf="parent"
+		app:layout_constraintHorizontal_bias="0.904"
+		app:layout_constraintVertical_bias="0.588" android:layout_marginEnd="-15dp"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

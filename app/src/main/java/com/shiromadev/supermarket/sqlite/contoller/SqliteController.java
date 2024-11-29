@@ -16,10 +16,10 @@ import java.util.Arrays;
 
 public class SqliteController extends SQLiteOpenHelper {
 	private static final String NAME_DB = "products.db";
-	private static final int SCHEMA = 11;
+	private static final int SCHEMA = 18;
 
 	private static final String TABLE_NAME = "products";
-	private static final String COLUMN_ID = "_id";
+	private static final String COLUMN_ID = "product_id";
 	private static final String COLUMN_CATEGORIES = "categories";
 	private static final String COLUMN_NAME = "name";
 	private static final String COLUMN_PRICE = "price";
@@ -27,7 +27,7 @@ public class SqliteController extends SQLiteOpenHelper {
 
 	private static final String TABLE_NAME_CART = "cart";
 	private static final String COLUMN_CART_ID = "cart_id";
-	private static final String COLUMN_PRODUCT_ID = "product_id";
+	private static final String COLUMN_PRODUCT_NAME = "product_name";
 	private static final String COLUMN_COUNT = "count";
 
 	public SqliteController(@Nullable Context context) {
@@ -49,7 +49,7 @@ public class SqliteController extends SQLiteOpenHelper {
 		db.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME_CART +
 			" ( "
 			+ COLUMN_CART_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-			+ COLUMN_PRODUCT_ID + " INTEGER NOT NULL,"
+			+ COLUMN_PRODUCT_NAME + " TEXT NOT NULL,"
 			+ COLUMN_COUNT + " INTEGER NOT NULL "
 			+ ");"
 		);
@@ -61,6 +61,7 @@ public class SqliteController extends SQLiteOpenHelper {
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
+		db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME_CART);
 		onCreate(db);
 	}
 
@@ -68,25 +69,25 @@ public class SqliteController extends SQLiteOpenHelper {
 		System.out.println("Заполнение таблицы!");
 		ArrayList<Product> tables = new ArrayList<>();
 		//milk
-		tables.add(Product.builder().name("Молоко").price(119).categories(Product.CATEGORIES.MILK_PRODUCTS).build());
-		tables.add(Product.builder().name("Кефир").price(99).categories(Product.CATEGORIES.MILK_PRODUCTS).build());
-		tables.add(Product.builder().name("Сыр").price(249).categories(Product.CATEGORIES.MILK_PRODUCTS).build());
-		tables.add(Product.builder().name("Йогурт").price(59).categories(Product.CATEGORIES.MILK_PRODUCTS).build());
+		tables.add(Product.builder().name("Milk").price(119).categories(Product.CATEGORIES.MILK_PRODUCTS).build());
+		tables.add(Product.builder().name("Kefir").price(99).categories(Product.CATEGORIES.MILK_PRODUCTS).build());
+		tables.add(Product.builder().name("Cheese").price(249).categories(Product.CATEGORIES.MILK_PRODUCTS).build());
+		tables.add(Product.builder().name("Yogurt").price(59).categories(Product.CATEGORIES.MILK_PRODUCTS).build());
 		//meat
-		tables.add(Product.builder().name("Говядина").price(1199).categories(Product.CATEGORIES.MEAT_PRODUCTS).build());
-		tables.add(Product.builder().name("Свинина").price(1099).categories(Product.CATEGORIES.MEAT_PRODUCTS).build());
-		tables.add(Product.builder().name("Курица").price(699).categories(Product.CATEGORIES.MEAT_PRODUCTS).build());
+		tables.add(Product.builder().name("Beef").price(1199).categories(Product.CATEGORIES.MEAT_PRODUCTS).build());
+		tables.add(Product.builder().name("Pork").price(1099).categories(Product.CATEGORIES.MEAT_PRODUCTS).build());
+		tables.add(Product.builder().name("Chicken").price(699).categories(Product.CATEGORIES.MEAT_PRODUCTS).build());
 		//drink
-		tables.add(Product.builder().name("Вода").price(49).categories(Product.CATEGORIES.DRINKS).build());
-		tables.add(Product.builder().name("Кола-Китайская").price(69).categories(Product.CATEGORIES.DRINKS).build());
-		tables.add(Product.builder().name("Черный чай").price(39).categories(Product.CATEGORIES.DRINKS).build());
-		tables.add(Product.builder().name("КОФЕ").price(99).categories(Product.CATEGORIES.DRINKS).build());
+		tables.add(Product.builder().name("Water").price(49).categories(Product.CATEGORIES.DRINKS).build());
+		tables.add(Product.builder().name("Coca-cola").price(69).categories(Product.CATEGORIES.DRINKS).build());
+		tables.add(Product.builder().name("Black tea").price(39).categories(Product.CATEGORIES.DRINKS).build());
+		tables.add(Product.builder().name("Coffee").price(99).categories(Product.CATEGORIES.DRINKS).build());
 		//fruits
-		tables.add(Product.builder().name("Яблоко").price(29).categories(Product.CATEGORIES.FRUITS).build());
-		tables.add(Product.builder().name("Лимон").price(19).categories(Product.CATEGORIES.FRUITS).build());
+		tables.add(Product.builder().name("Apple").price(29).categories(Product.CATEGORIES.FRUITS).build());
+		tables.add(Product.builder().name("Lemon").price(19).categories(Product.CATEGORIES.FRUITS).build());
 		//vegetables
-		tables.add(Product.builder().name("Картофель").price(39).categories(Product.CATEGORIES.VEGETABLES).build());
-		tables.add(Product.builder().name("Томат").price(49).categories(Product.CATEGORIES.VEGETABLES).build());
+		tables.add(Product.builder().name("Potato").price(39).categories(Product.CATEGORIES.VEGETABLES).build());
+		tables.add(Product.builder().name("Tomato").price(49).categories(Product.CATEGORIES.VEGETABLES).build());
 
 		ContentValues values = new ContentValues(tables.size());
 		int id = 1;
@@ -120,9 +121,8 @@ public class SqliteController extends SQLiteOpenHelper {
 				case "drinks" -> Product.CATEGORIES.DRINKS;
 				default -> Product.CATEGORIES.DEFAULT;
 			};
-			System.out.println("item id: " + cursor.getColumnIndex(COLUMN_ID));
 			tables.add(createItem(
-				cursor.getInt(cursor.getColumnIndex(COLUMN_ID)),
+				cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_ID)),
 				group,
 				cursor.getString(cursor.getColumnIndex(COLUMN_NAME)),
 				cursor.getInt(cursor.getColumnIndex(COLUMN_PRICE)),
@@ -163,15 +163,14 @@ public class SqliteController extends SQLiteOpenHelper {
 
 	public void saveShoppingCart(SQLiteDatabase db, ProductCartList<ProductCart> cart) {
 		try (db) {
-			if (!cart.isEmpty()) {
-				db.execSQL("DELETE FROM " + TABLE_NAME_CART);
-				ContentValues values = new ContentValues(cart.size());
-				for (ProductCart item : cart) {
-					values.put(COLUMN_PRODUCT_ID, item.getId());
-					values.put(COLUMN_COUNT, item.getCountProduct());
-					db.insert(TABLE_NAME_CART, null, values);
-					values.clear();
-				}
+			db.execSQL("DELETE FROM " + TABLE_NAME_CART);
+			ContentValues values = new ContentValues(cart.size());
+			for (ProductCart item : cart) {
+				System.out.println("save item id: " + item.getName());
+				values.put(COLUMN_PRODUCT_NAME, item.getName());
+				values.put(COLUMN_COUNT, item.getCountProduct());
+				db.insert(TABLE_NAME_CART, null, values);
+				values.clear();
 			}
 		} catch (Exception e) {
 			System.out.println(e.getLocalizedMessage());
@@ -188,8 +187,9 @@ public class SqliteController extends SQLiteOpenHelper {
 		System.out.println("carts size: " + cursor.getCount());
 		if (cursor.getCount() == 0 ) return new ProductCartList<>();
 		cursor.moveToFirst();
+		String id;
 		while (!cursor.isAfterLast()) {
-			int id = cursor.getInt(cursor.getColumnIndex(COLUMN_PRODUCT_ID));
+			id = cursor.getString(cursor.getColumnIndex(COLUMN_PRODUCT_NAME));
 			System.out.println("id: " + id);
 			int count = cursor.getInt(cursor.getColumnIndex(COLUMN_COUNT));
 			products.add(createItem(getProduct(db, id), count));
@@ -201,8 +201,8 @@ public class SqliteController extends SQLiteOpenHelper {
 	}
 
 	@SuppressLint({"Recycle", "Range"})
-	private Product getProduct(SQLiteDatabase db, int id) {
-		Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_ID + " = " + "'" + id + "'", null);
+	private Product getProduct(SQLiteDatabase db, String id) {
+		Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_NAME + " = " + "'" + id + "'", null);
 		Product product;
 		cursor.moveToFirst();
 		String searchGroup = cursor.getString(cursor.getColumnIndex(COLUMN_CATEGORIES));
@@ -232,7 +232,6 @@ public class SqliteController extends SQLiteOpenHelper {
 			.icon(icon)
 			.build();
 	}
-
 
 	private ProductCart createItem(Product p, int count) {
 		return ProductCart.builder()

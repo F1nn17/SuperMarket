@@ -9,6 +9,7 @@ public class ProductCartList<T extends Product>extends AbstractList<T>
 
 	private Object[] products;
 	private int size;
+	private int countProducts;
 
 	public ProductCartList() {
 		products = new Object[1];
@@ -125,5 +126,17 @@ public class ProductCartList<T extends Product>extends AbstractList<T>
 
 	public int size() {
 		return size;
+	}
+
+	public int getCountProducts(){
+		int count = 0;
+		if(size != 0) {
+			for (int i = 0; i < size; i++) {
+				if (products[i] instanceof ProductCart item) {
+					count += item.getCountProduct();
+				}
+			}
+		}
+		return count;
 	}
 }

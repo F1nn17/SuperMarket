@@ -15,6 +15,8 @@ import com.shiromadev.supermarket.MainActivity;
 import com.shiromadev.supermarket.R;
 import com.shiromadev.supermarket.item.shoppingcart.ProductCart;
 
+import java.nio.charset.StandardCharsets;
+
 public class Barcode extends Fragment implements View.OnClickListener{
 	private ImageView qrCode;
 
@@ -43,9 +45,11 @@ public class Barcode extends Fragment implements View.OnClickListener{
 	private void generateQRCode(String text)
 	{
 		qrCode.setImageBitmap(null);
+		byte[] utf8Bytes = text.getBytes(StandardCharsets.UTF_8);
+		String utf8String = new String(utf8Bytes, StandardCharsets.UTF_8);
 		BarcodeEncoder barcodeEncoder = new BarcodeEncoder();
 		try {
-			Bitmap bitmap = barcodeEncoder.encodeBitmap(text, BarcodeFormat.QR_CODE, 400, 400);
+			Bitmap bitmap = barcodeEncoder.encodeBitmap(utf8String, BarcodeFormat.QR_CODE, 400, 400);
 			qrCode.setImageBitmap(bitmap);
 		}
 		catch (WriterException e) {

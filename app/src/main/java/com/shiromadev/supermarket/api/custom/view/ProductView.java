@@ -18,43 +18,57 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 @Getter
 public class ProductView implements View.OnClickListener {
 
-	private static final int gravity = Gravity.CENTER;
-	private final LinearLayout layout;
-	private final Product product;
+    private static final int gravity = Gravity.CENTER;
+    private final LinearLayout layout;
+    private final Product product;
 
-	@SuppressLint("SetTextI18n")
-	public ProductView(Context context, Product product) {
-		this.product = product;
-		layout = new LinearLayout(context);
-		layout.setOrientation(LinearLayout.VERTICAL);
-		LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(0, WRAP_CONTENT, 1f);
-		params1.gravity = Gravity.FILL;
-		layout.setLayoutParams(params1);
-		LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(250, 250);
-		params.gravity = gravity;
-		ImageButton bt = new ImageButton(context);
-		bt.setImageResource(R.mipmap.ic_icon_product_foreground);
-		bt.setOnClickListener(this);
-		layout.addView(bt, params);
-		params = new LinearLayout.LayoutParams(250, 100);
-		TextView tv = new TextView(context);
-		tv.setText(product.getName() + "\n" + product.getPrice());
-		tv.getAutoSizeTextAvailableSizes();
-		tv.setTextAlignment(TEXT_ALIGNMENT_CENTER);
-		layout.addView(tv, params);
-	}
+    @SuppressLint({"SetTextI18n", "DiscouragedApi"})
+    public ProductView(Context context, Product product) {
+        this.product = product;
+        layout = new LinearLayout(context);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(0, WRAP_CONTENT, 1f);
+        params1.gravity = Gravity.FILL;
+        layout.setLayoutParams(params1);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(250, 250);
+        params.gravity = gravity;
+        ImageButton bt = new ImageButton(context);
+        // Настраиваем масштабирование
+        bt.setScaleType(ImageView.ScaleType.FIT_CENTER); // Центрируем иконку в пределах кнопки
+        bt.setAdjustViewBounds(true); // Позволяем кнопке изменять размеры, чтобы подогнать изображение
+        // Загрузка иконки
+        int iconResId = context.getResources().getIdentifier(
+                product.getIcon(), // Имя иконки без расширения
+                "drawable",            // Папка в res
+                context.getPackageName() // Пакет приложения
+        );
 
-	@Override
-	public void onClick(View v) {
-		System.out.println("Товар добавлен в корзину");
-		ProductCart productCart = ProductCart.builder()
-			.name(product.getName())
-			.price(product.getPrice())
-			.categories(product.getCategories())
-			.icon(product.getIcon())
-			.countProduct(1)
-			.build();
-		MainActivity.getShoppingCart().add(productCart);
-		MainActivity.updateCount();
-	}
+        if (iconResId != 0) {
+            bt.setImageResource(iconResId); // Устанавливаем иконку, если найдена
+        } else {
+            bt.setImageResource(R.mipmap.ic_icon_product_foreground); // Заглушка, если иконка не найдена
+        }
+        bt.setOnClickListener(this);
+        layout.addView(bt, params);
+        params = new LinearLayout.LayoutParams(250, 100);
+        TextView tv = new TextView(context);
+        tv.setText(product.getName() + "\n" + product.getPrice());
+        tv.getAutoSizeTextAvailableSizes();
+        tv.setTextAlignment(TEXT_ALIGNMENT_CENTER);
+        layout.addView(tv, params);
+    }
+
+    @Override
+    public void onClick(View v) {
+        System.out.println("Товар добавлен в корзину");
+        ProductCart productCart = ProductCart.builder()
+                .name(product.getName())
+                .price(product.getPrice())
+                .categories(product.getCategories())
+                .icon(product.getIcon())
+                .countProduct(1)
+                .build();
+        MainActivity.getShoppingCart().add(productCart);
+        MainActivity.updateCount();
+    }
 }
